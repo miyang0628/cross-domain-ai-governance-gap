@@ -1,0 +1,13 @@
+domain,dataset,regulation,g_PERF,g_DI,g_SP,g_EXPL,GGI
+credit,German Credit,KR_AI_Basic_Act,0.0,0.0,0.0,0.6818,0.6818
+credit,German Credit,EU_AI_Act,0.0,0.0,0.0139,0.7348,0.735
+credit,German Credit,NAIC,0.0,0.0,0.0451,0.7107,0.7121
+credit,Credit Card Approval,KR_AI_Basic_Act,0.0,0.0,0.0,0.5325,0.5325
+credit,Credit Card Approval,EU_AI_Act,0.0482,0.0,0.0,0.6104,0.6123
+credit,Credit Card Approval,NAIC,0.0482,0.0,0.0,0.575,0.577
+insurance,Medical Cost,KR_AI_Basic_Act,0.6512,0.1739,0.0007,0.6995,0.9714
+insurance,Medical Cost,EU_AI_Act,0.7384,0.2225,0.0224,0.7496,1.0757
+insurance,Medical Cost,NAIC,0.7384,0.2657,0.0533,0.7268,1.071
+insurance,Porto Seguro,KR_AI_Basic_Act,0.6267,1.0,0.0,0.8551,1.4574
+insurance,Porto Seguro,EU_AI_Act,0.7201,1.0,0.0,0.8793,1.5138
+insurance,Porto Seguro,NAIC,0.7201,1.0,0.0,0.8683,1.5075

@@ -1,124 +1,233 @@
 # Cross-Domain AI Governance Gap Analysis
 
-Replication code for the study *Cross-Domain AI Governance Gap Analysis: Comparing
-Fairness Gaps between Credit Scoring and Insurance Underwriting under High-Impact AI
-Standards.*
+Reproducibility repository for the paper **“Cross-Domain AI Governance Gap
+Analysis: Comparing Fairness Gaps between Credit Scoring and Insurance
+Underwriting under High-Impact AI Standards.”**
 
-This repository accompanies an anonymous submission and is provided for peer review.
-Author and affiliation information has been removed for double-blind review.
+> **Status:** anonymized for peer review.
+> Anonymous mirror: <https://anonymous.4open.science/r/cross-domain-ai-governance-gap-3BC4>
+
+---
 
 ## Overview
 
-The study introduces the **Governance Gap Index (GGI)**, a measure that quantifies the
-distance between a model's realized behavior and the requirements imposed by high-impact
-AI regulations. The GGI is computed for each (dataset x regulation) pair using a
-threshold-distance backbone with normalized per-component gaps:
+Credit scoring and insurance underwriting are both designated as
+*high-impact AI* under emerging AI-governance regimes, yet they differ
+sharply in regulatory environment, data structure, and bias patterns. This
+project asks a measurement question that normative governance prescriptions
+leave open: **when an identical high-impact AI standard is applied, does the
+governance gap — the distance between regulatory requirements and actual
+model behavior — differ across domains, and across regulatory regimes?**
 
-- For component *k* under regulation *r*, with required threshold `tau[r,k]` and a model
-  score `s_k` oriented so that higher is better:
-  `g[r,k] = max(0, tau[r,k] - s_k) / tau[r,k]`
-- The per-regulation index aggregates the component gaps as a Euclidean distance:
-  `GGI[r] = sqrt( sum_k g[r,k]^2 )` (lower is better; 0 = full compliance)
+To answer it, the repository implements the **Governance Gap Index (GGI)**, a
+measurement instrument that quantifies how far a deployed model falls short
+of a regulation’s thresholds along four axes, and applies it to four public
+datasets under three regulatory threshold scenarios.
 
-Regulation differences are encoded as a modeled strictness gradient across thresholds
-(KR AI Basic Act < EU AI Act < NAIC); these thresholds are scenarios, not codified legal
-constants.
+The analysis is **illustrative rather than confirmatory**: two of the four
+datasets have weak discriminative power, and the regulatory thresholds are
+strictness scenarios rather than enacted constants. Results should be read
+as demonstrating what the GGI can reveal, not as definitive audits.
 
-Component scores: discriminative adequacy (from AUC), worst-case fairness (Disparate
-Impact and Statistical Parity across all sensitive attributes), and explainability
-(entropy-based SHAP concentration). A fourth framework axis, recourse feasibility, is
-demonstrated on datasets with semantically interpretable features.
+---
+
+## The Governance Gap Index (GGI)
+
+Each of four axes is mapped to a component score `s_k ∈ [0, 1]` (higher is
+better):
+
+| Axis | Score | Definition |
+|------|-------|------------|
+| Performance | `s_PERF` | `max(0, (AUC − 0.5) / 0.5)` |
+| Disparate impact (worst-case) | `s_DI` | `min(1, min_a DI_a)` |
+| Statistical parity (worst-case) | `s_SP` | `1 − max_a |SPD_a|` |
+| Explainability | `s_EXPL` | `1 − normalized SHAP entropy` |
+
+Given a regulation `r` with per-axis thresholds `τ[r,k]`, the per-axis gap and
+the aggregated index are:
+
+```
+g[r,k] = max(0, τ[r,k] − s_k) / τ[r,k]        # normalized shortfall, in [0, 1]
+GGI[r] = sqrt( Σ_k g[r,k]^2 )                 # Euclidean; lower is better, 0 = full compliance
+```
+
+The fairness axes use a **worst-case** aggregation over sensitive attributes
+(minimum DI, maximum |SPD|), which is what lets the index capture hidden
+disparities a single-proxy audit would miss.
+
+### Regulatory threshold scenarios
+
+Strictness scenarios, **not** legal constants — used for relative comparison
+only. All three regimes are applied to all four datasets (applying an
+insurance-oriented standard to credit data, or vice versa, is a
+counterfactual comparison).
+
+| Regulation | τ_PERF | τ_DI | τ_SP | τ_EXPL |
+|------------|:------:|:----:|:----:|:------:|
+| KR AI Basic Act | 0.30 | 0.80 | 0.90 | 0.50 |
+| EU AI Act | 0.40 | 0.85 | 0.92 | 0.60 |
+| NAIC | 0.40 | 0.90 | 0.95 | 0.55 |
+
+---
 
 ## Datasets
 
-The datasets are **not redistributed** here. Obtain them from the original sources and
-place the files in `data/` as described below.
+Data are **not redistributed**. Download each from its original source and
+place the files in `data/` as noted below.
 
-| Domain    | Dataset                          | Source                    | Expected file(s) in `data/`                     |
-|-----------|----------------------------------|---------------------------|-------------------------------------------------|
-| Credit    | German Credit (Statlog)          | UCI ML Repository         | `german.data` (downloaded automatically)        |
-| Credit    | Credit Card Approval Prediction  | Kaggle (dataset)          | `application_record.csv`, `credit_record.csv`   |
-| Insurance | Medical Cost Personal            | Kaggle (dataset)          | `insurance.csv`                                  |
-| Insurance | Porto Seguro Safe Driver         | Kaggle (competition)      | `porto_train.csv` (rename from `train.csv`)     |
+| Domain | Dataset | Source | Sensitive attribute(s) | File(s) in `data/` |
+|--------|---------|--------|------------------------|--------------------|
+| Credit | German Credit (Statlog) | UCI (auto-downloaded) | sex, age group | `german.data` |
+| Credit | Credit Card Approval Prediction | Kaggle | sex | `application_record.csv`, `credit_record.csv` |
+| Insurance | Medical Cost Personal | Kaggle | sex, age group, smoker | `insurance.csv` |
+| Insurance | Porto Seguro Safe Driver | Kaggle | anonymized proxies (`ps_ind_*`) | `porto_train.csv` |
 
 Notes:
-- `german.data` is fetched automatically from the UCI repository by the first notebook.
-- Kaggle files require a Kaggle account. Competition data additionally requires accepting
-  the competition rules before download.
-- For the Credit Card Approval data, the binary target is derived from `credit_record.csv`
-  using a 30-days-past-due default definition (a 60-days variant is also produced).
-- Porto Seguro is stratified-subsampled to align sample sizes across domains.
+- **German Credit** is downloaded automatically from UCI by
+  `01_data_loading.ipynb` if missing. The sex attribute is mapped from the
+  combined `personal_status_sex` variable; this mapping has a known coding
+  limitation (Grömping, 2019), and the corrected *South German Credit*
+  release is not used.
+- **Credit Card Approval** labels are derived from `credit_record.csv`; the
+  primary label marks an account high-risk if it ever reaches 30 days past
+  due (`target_30dpd`).
+- **Medical Cost** is binarized by labeling the top 25% of `charges` as
+  high-risk.
+- **Porto Seguro** (`train.csv`, unzip and rename to `porto_train.csv`) is
+  stratified-subsampled to 40,000 rows to align sample sizes across domains.
+
+Kaggle sources:
+- Credit Card Approval — `rikdifos/credit-card-approval-prediction`
+- Medical Cost — `mirichoi0218/insurance`
+- Porto Seguro — `competitions/porto-seguro-safe-driver-prediction`
+
+---
 
 ## Repository structure
 
 ```
 .
-├── data/                 # place raw datasets here (not tracked)
-│   └── processed/        # intermediate parquet files (generated)
+├── data/                     # place raw inputs here (not tracked); processed/ is generated
+│   └── processed/            # parquet splits + preprocess_meta.json (created by nbs 01–02)
 ├── notebooks/
-│   ├── 01_data_loading.ipynb
-│   ├── 02_preprocessing.ipynb
-│   ├── 03_fairness_metrics.ipynb
-│   ├── 04_ggi.ipynb
-│   ├── 05_sensitivity.ipynb
-│   ├── 06_visualization.ipynb
-│   └── 07_recourse.ipynb
+│   ├── 01_data_loading.ipynb      # load 4 datasets, build targets, cross-domain summary
+│   ├── 02_preprocessing.ipynb     # shared impute/scale/encode, subsample, stratified split
+│   ├── 03_fairness_metrics.ipynb  # unified XGBoost baseline + group-fairness metrics
+│   ├── 04_ggi.ipynb               # component scores + 4-axis GGI matrix
+│   ├── 05_sensitivity.ipynb       # Studies A–D (threshold / aggregation / expl. / bootstrap)
+│   ├── 06_visualization.ipynb     # publication figures (grayscale, 600 dpi, PNG + PDF)
+│   └── 07_recourse.ipynb          # DiCE recourse feasibility (auxiliary axis)
 └── results/
-    ├── figures/          # generated figures (PNG + PDF, 600 dpi, grayscale)
-    └── tables/           # generated result tables (CSV)
+    ├── tables/               # CSV outputs consumed by the manuscript
+    └── figures/              # fig1–fig5 (PNG + PDF)
 ```
 
-## Requirements
+Run the notebooks **in order** (`01 → 07`); each persists intermediate
+artifacts the next one reads.
 
-Python 3.10+ with:
+---
 
-```
-numpy
-pandas
-scikit-learn
-xgboost
-lightgbm
-catboost
-shap
-dice-ml
-seaborn
-matplotlib
-pyarrow
-xlrd>=2.0.1
-kaggle
-```
+## Reproducing the analysis
 
-Install with:
+### Environment
 
-```
-pip install numpy pandas scikit-learn xgboost lightgbm catboost shap dice-ml \
-            seaborn matplotlib pyarrow "xlrd>=2.0.1" kaggle
+- Python 3.10
+- Core packages: `numpy`, `pandas`, `pyarrow`, `scikit-learn`, `xgboost`,
+  `shap`, `dice-ml`, `matplotlib`, `seaborn`
+
+```bash
+python -m venv .venv
+source .venv/bin/activate            # Windows: .venv\Scripts\activate
+pip install numpy pandas pyarrow scikit-learn xgboost shap dice-ml matplotlib seaborn
 ```
 
-## Reproduction
+### Run
 
-Run the notebooks in order from the `notebooks/` directory:
+```bash
+# from the repository root, after placing raw files in data/
+jupyter lab            # then execute notebooks 01 → 07 in order
+```
 
-1. `01_data_loading.ipynb` — load datasets, derive targets, write processed parquet files
-2. `02_preprocessing.ipynb` — impute, encode, scale, split; subsample large datasets
-3. `03_fairness_metrics.ipynb` — unified baseline and group-fairness metrics
-4. `04_ggi.ipynb` — component scores and the Governance Gap Index
-5. `05_sensitivity.ipynb` — robustness checks (thresholds, aggregation, bootstrap)
-6. `06_visualization.ipynb` — publication figures
-7. `07_recourse.ipynb` — recourse feasibility (supplementary axis)
+Key configuration (in the notebooks): `RANDOM_STATE = 42`,
+`TEST_SIZE = 0.25`, `MAX_ROWS = 40000`, `N_BOOTSTRAP = 200`. The unified
+baseline is a single XGBoost configuration applied identically to every
+dataset, with `scale_pos_weight` for imbalance and a prevalence-based
+decision threshold.
 
-A fixed random seed (42) is used throughout. Outputs are written to `results/`.
+---
 
-## Notes on interpretation
+## Key results
 
-- Regulation thresholds represent a modeled strictness gradient, not exact legal
-  requirements; results should be read as relative comparisons.
-- Two of the four datasets (Medical Cost, Porto Seguro) yield low model discrimination;
-  their fairness and gap estimates are indicative rather than confirmatory, and this is
-  reflected in the bootstrap confidence intervals.
-- Recourse feasibility is undefined for datasets with anonymized proxy features and is
-  reported as such.
+**GGI by dataset and regulation** (point estimates; lower is better):
+
+| Domain | Dataset | KR | EU | NAIC |
+|--------|---------|:--:|:--:|:----:|
+| Credit | Credit Card Approval | 0.533 | 0.612 | 0.577 |
+| Credit | German Credit | 0.682 | 0.735 | 0.712 |
+| Insurance | Medical Cost | 0.971 | 1.076 | 1.071 |
+| Insurance | Porto Seguro | 1.457 | 1.514 | 1.508 |
+| — | **Credit mean** | 0.607 | 0.674 | 0.645 |
+| — | **Insurance mean** | 1.214 | 1.295 | 1.289 |
+
+- **RQ1 — domain gap.** The insurance-domain gap is roughly **twice** the
+  credit-domain gap under every regime. This is driven mainly by the low
+  discriminative difficulty of the empirical insurance data (“prediction
+  difficulty”), not by inherent bias.
+- **RQ2 — regime reordering.** Within each domain the ordering is
+  **EU > NAIC > KR**, driven by the explainability axis (the EU scenario sets
+  the strictest explainability threshold). NAIC is strictest on fairness but
+  does not produce the largest gaps, because the fairness shortfalls in these
+  data are small relative to the explainability shortfall.
+- **RQ3 — proxy auditing.** For Porto Seguro the disparate-impact ratio
+  ranges from 0.000 to 1.681 across candidate proxies; a single-proxy audit
+  would report near-parity and miss it. Worst-case aggregation drives
+  `s_DI = 0`, so the hidden disparity enters the index.
+
+**Robustness (Studies A–D).** The domain ordering (insurance > credit) holds
+under threshold scaling (gap ≈ 0.62), across aggregation rules
+(gap 0.62 / 0.36 / 0.22 for Euclidean / mean / max — sign invariant), and
+across the explainability-threshold sweep (gap 0.96 → 0.58). Bootstrap 95%
+CIs separate the two domains overall; the Medical Cost interval is wide
+(`N_test = 335`), so robustness is carried mainly by Porto Seguro.
+
+**Recourse (auxiliary).** DiCE feasibility is high across the three
+interpretable-feature datasets (German Credit 1.00, Medical Cost 1.00,
+Credit Card Approval 0.84; Porto Seguro N/A over anonymized proxies), so the
+recourse axis is demonstrative rather than diagnostic and does not change the
+main conclusion.
+
+---
+
+## Outputs
+
+Running the notebooks regenerates:
+
+- `results/tables/` — cross-domain summary, preprocessing summary, primary
+  fairness metrics, proxy supplement, GGI matrix, sensitivity studies, and
+  bootstrap CIs (CSV).
+- `results/figures/` — `fig1_ggi_heatmap`, `fig2_component_stack`,
+  `fig3_domain_bars`, `fig4_bootstrap_ci`, `fig5_sensitivity_expl`
+  (PNG + PDF, grayscale, 600 dpi).
+
+---
+
+## Limitations
+
+The results are exemplary, not confirmatory. The two insurance datasets are
+weakly identified; the regulatory thresholds are scenarios, not statutes;
+the benchmark datasets are dated and imperfectly documented; Porto Seguro’s
+proxies cannot be mapped to real demographic groups; the GGI tends to be
+governed by the explainability axis (a property of gradient-boosted models);
+and the recourse axis is a binary feasibility check rather than a cost-based
+measure. See the manuscript’s Limitations section for details.
+
+---
+
+## Citation
+
+A citation block will be added upon de-anonymization. For now, please refer
+to the anonymized manuscript and this repository.
 
 ## License
 
-Provided for peer review. A license will be added upon publication.
+To be specified upon de-anonymization.

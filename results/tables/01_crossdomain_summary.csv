@@ -1,6 +1,0 @@
-domain,dataset,n_rows,pos_rate,sensitive
-credit,German Credit,1000,0.3,"sex, age_group"
-credit,Credit Card Approval (30dpd),36457,0.118,sex
-credit,Credit Card Approval (60dpd),36457,0.017,sex
-insurance,Medical Cost,1338,0.25,"sex, age_group, smoker"
-insurance,Porto Seguro,595212,0.036,proxy (ps_ind_*)

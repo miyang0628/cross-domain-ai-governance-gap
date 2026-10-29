@@ -1,5 +1,0 @@
-domain,dataset,n_features,n_train,n_test,sensitive
-credit,German Credit,57,750,250,"sex, age_group"
-credit,Credit Card Approval,53,27342,9115,sex
-insurance,Medical Cost,7,1003,335,"sex, age_group, smoker_flag"
-insurance,Porto Seguro,43,30000,10000,14 proxy cols

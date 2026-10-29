@@ -1,5 +1,0 @@
-domain,dataset,AUC,s_PERF,s_DI,s_SP,s_EXPL
-credit,German Credit,0.8016,0.6032,1.0,0.9072,0.1591
-credit,Credit Card Approval,0.6904,0.3807,1.0,0.965,0.2337
-insurance,Medical Cost,0.5523,0.1046,0.6609,0.8994,0.1502
-insurance,Porto Seguro,0.556,0.112,0.0,0.9634,0.0724

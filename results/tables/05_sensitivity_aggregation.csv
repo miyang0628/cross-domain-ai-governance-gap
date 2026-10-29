@@ -1,0 +1,4 @@
+rule,insurance_gt_credit,gap,KR,EU,NAIC
+euclid,True,0.4124,0.8184,0.9006,0.8835
+mean,True,0.2482,0.2746,0.3085,0.3046
+max,True,0.1496,0.7093,0.7578,0.7358

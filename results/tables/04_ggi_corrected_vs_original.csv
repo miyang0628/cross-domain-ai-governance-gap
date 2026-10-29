@@ -1,0 +1,4 @@
+regulation,credit_original,insurance_original,ratio_original,credit_corrected,insurance_corrected,ratio_corrected
+KR_AI_Basic_Act,0.6275,1.018,1.622,0.6275,1.0093,1.608
+EU_AI_Act,0.6924,1.122,1.621,0.6922,1.109,1.602
+NAIC,0.6649,1.1228,1.689,0.6642,1.1029,1.661

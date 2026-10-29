@@ -1,0 +1,5 @@
+dataset,GGI_4axis,GGI_extended,recourse_included
+German Credit,0.6874,0.6874,True
+Credit Card Approval,0.5676,0.5676,True
+Medical Cost,0.8839,0.8837,True
+Porto Seguro,1.1347,1.1347,False

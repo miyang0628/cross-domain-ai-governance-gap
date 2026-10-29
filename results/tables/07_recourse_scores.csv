@@ -1,0 +1,5 @@
+dataset,s_REC,feasible,tested,immutable
+German Credit,1.0,98,98,"age, foreign_worker"
+Credit Card Approval,0.88,88,100,"CODE_GENDER, DAYS_BIRTH, FLAG_OWN_REALTY, FLAG_OWN_CAR"
+Medical Cost,1.0,63,63,"age, sex"
+Porto Seguro,,0,0,N/A (anonymized proxies)

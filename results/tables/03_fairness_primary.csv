@@ -1,0 +1,5 @@
+domain,dataset,sensitive,privileged,threshold,pred_pos_rate,AUC,PR_AUC,StatParityDiff,DisparateImpact,EqualOppDiff,AvgOddsDiff
+credit,German Credit,sex,male,0.467,0.3,0.812,0.6657,0.0484,1.1701,0.0671,0.0331
+credit,Credit Card Approval,sex,male,0.5729,0.1177,0.6835,0.2671,-0.0315,0.7732,-0.0557,-0.0404
+insurance,Medical Cost,sex,male,0.562,0.2507,0.5742,0.3161,-0.0074,0.9709,-0.0276,-0.0132
+insurance,Porto Seguro,ps_ind_04_cat,0.0,0.5939,0.0365,0.5678,0.0478,-0.0011,0.9715,-0.0468,-0.023

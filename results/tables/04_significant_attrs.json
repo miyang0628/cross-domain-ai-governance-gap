@@ -1,0 +1,14 @@
+{
+  "german": [],
+  "credit_card_approval": [
+    "sex"
+  ],
+  "insurance": [],
+  "porto_seguro": [
+    "ps_ind_06_bin",
+    "ps_ind_07_bin",
+    "ps_ind_08_bin",
+    "ps_ind_16_bin",
+    "ps_ind_17_bin"
+  ]
+}

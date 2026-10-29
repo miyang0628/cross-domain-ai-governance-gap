@@ -1,0 +1,15 @@
+proxy,privileged,is_representative,StatParityDiff,DisparateImpact,EqualOppDiff,AvgOddsDiff
+ps_ind_02_cat,1.0,False,0.0004,1.0112,-0.0494,-0.0235
+ps_ind_04_cat,0.0,True,-0.0011,0.9715,-0.0468,-0.023
+ps_ind_05_cat,0.0,False,0.0131,1.3775,-0.0075,0.0029
+ps_ind_06_bin,0,False,-0.0288,0.3981,-0.0819,-0.0542
+ps_ind_07_bin,0,False,0.0341,2.2307,0.0344,0.034
+ps_ind_08_bin,0,False,0.0133,1.3878,0.1105,0.06
+ps_ind_09_bin,0,False,-0.0095,0.7514,-0.03,-0.0193
+ps_ind_10_bin,0,False,0.1302,4.576,,
+ps_ind_11_bin,0,False,0.1304,4.5958,-0.0773,0.0377
+ps_ind_12_bin,0,False,0.0388,2.0724,-0.0782,-0.0159
+ps_ind_13_bin,0,False,0.035,1.9596,,
+ps_ind_16_bin,1,False,0.0124,1.3861,0.0487,0.0296
+ps_ind_17_bin,0,False,0.0194,1.5695,0.0875,0.0515
+ps_ind_18_bin,0,False,0.0087,1.2463,0.0303,0.0188

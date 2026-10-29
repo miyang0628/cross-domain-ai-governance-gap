@@ -1,0 +1,5 @@
+dataset,KR_AI_Basic_Act,EU_AI_Act,NAIC
+Credit Card Approval,0.5676,0.645,0.6125
+German Credit,0.6874,0.7395,0.7158
+Medical Cost,0.8839,0.995,0.979
+Porto Seguro,1.1347,1.223,1.2268
